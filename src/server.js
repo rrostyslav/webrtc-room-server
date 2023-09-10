@@ -1,9 +1,11 @@
-const httpServer = require("http").createServer();
-const io = require("socket.io")(httpServer)
+import { Server } from "socket.io";
 
 const PORT = process.env.PORT ?? 3000;
 
+const io = new Server();
+
 io.on("connection", (socket) => {
+  console.log("connected", socket);
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
     socket.to(roomId).broadcast.emit("user-connected", userId);
@@ -13,7 +15,4 @@ io.on("connection", (socket) => {
     });
   });
 });
-
-httpServer.listen(PORT, undefined, undefined, () => {
-  console.info("Server running on port:", PORT);
-});
+io.listen(3000);
